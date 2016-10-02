@@ -13,12 +13,12 @@ import org.eclipse.californium.core.network.EndpointManager;
 import org.eclipse.californium.core.network.config.NetworkConfig;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-public class SeniorCoapServer extends CoapServer {
+public class TestCoapServer extends CoapServer {
 
 	private class DataSampleResource extends CoapResource {
 
 		public DataSampleResource() {
-			super("senior-data-sample");
+			super("data-sample");
 		}
 
 		@Override
@@ -35,7 +35,7 @@ public class SeniorCoapServer extends CoapServer {
 
 	public static void main(String[] args) {
 		try {
-			SeniorCoapServer server = new SeniorCoapServer();
+			TestCoapServer server = new TestCoapServer();
 			server.addEndpoints();
 			server.start();
 		} catch (SocketException e) {
@@ -43,7 +43,7 @@ public class SeniorCoapServer extends CoapServer {
 		}
 	}
 
-	public SeniorCoapServer() throws SocketException {
+	public TestCoapServer() throws SocketException {
 		add(new DataSampleResource());
 	}
 

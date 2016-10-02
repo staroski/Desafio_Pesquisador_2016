@@ -10,13 +10,13 @@ import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.Utils;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 
-public class SeniorCoapClient {
+public class TestCoapClient {
 
 	public static void main(String args[]) {
 		try {
-			String csvDir = "E:\\Desafio_Pesquisador_2016\\prototipos\\senior-data-sample";
-			String serverURI = "coap://localhost:5683/senior-data-sample";
-			SeniorCoapClient program = new SeniorCoapClient(csvDir, serverURI);
+			String csvDir = "E:\\Desafio_Pesquisador_2016\\prototipos\\data-sample";
+			String serverURI = "coap://localhost:5683/data-sample";
+			TestCoapClient program = new TestCoapClient(csvDir, serverURI);
 			program.execute();
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -26,7 +26,7 @@ public class SeniorCoapClient {
 	private final String csvDir;
 	private final String serverURI;
 
-	public SeniorCoapClient(String csvDir, String serverURI) {
+	public TestCoapClient(String csvDir, String serverURI) {
 		this.csvDir = csvDir;
 		this.serverURI = serverURI;
 	}
