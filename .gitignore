@@ -1,8 +1,7 @@
-material
-
-**/RemoteSystemsTempFiles
-
 **/.metadata
 **/.settings
+**/RemoteSystemsTempFiles
 
 **/*.class
+
+**/senior-data-sample
