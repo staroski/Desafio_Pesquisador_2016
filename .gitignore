@@ -1,0 +1,8 @@
+material
+
+**/RemoteSystemsTempFiles
+
+**/.metadata
+**/.settings
+
+**/*.class
