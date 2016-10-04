@@ -14,9 +14,8 @@ set MAIN_CLASS=test.mqtt.TestMqttClient
 set DATA_DIR=..\..\data-sample
 set LOG_FILE=mqtt-performance.csv
 set URI=tcp://localhost:1883
-set ID=test-mqtt-client
 set INTERVAL=300
 
 echo "Executing TestMqttClient..."
-"%JAVA_HOME%\bin\java.exe" -classpath %MQTT_CLASSPATH% %MAIN_CLASS% %DATA_DIR% %LOG_FILE% %URI% %ID% %INTERVAL%
+"%JAVA_HOME%\bin\java.exe" -classpath %MQTT_CLASSPATH% %MAIN_CLASS% %DATA_DIR% %LOG_FILE% %URI% %INTERVAL%
 echo "Execution finished!"

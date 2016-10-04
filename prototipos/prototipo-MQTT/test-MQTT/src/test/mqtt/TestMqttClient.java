@@ -21,7 +21,9 @@ public class TestMqttClient {
 	private class ClientCallback implements MqttCallback {
 
 		@Override
-		public void connectionLost(Throwable cause) {}
+		public void connectionLost(Throwable cause) {
+			System.err.println("ERROR");
+		}
 
 		@Override
 		public void deliveryComplete(IMqttDeliveryToken token) {}
@@ -33,31 +35,27 @@ public class TestMqttClient {
 		}
 	}
 
-	private static String TOPIC = "sensorData";
-
 	public static void main(String[] args) {
 		final Timer timer = new Timer();
 		try {
-			if (args.length != 5) {
+			if (args.length != 4) {
 				System.out.println("usage:");
-				System.out.println("\t<java> <class-name> <data-dir> <log-file> <uri> <id> <interval>");
+				System.out.println("\t<java> <class-name> <data-dir> <log-file> <uri> <interval>");
 				System.out.println("where:");
 				System.out.println("\t<java>       the java command to be used for example: java or javaw");
 				System.out.println("\t<class-name> " + TestMqttClient.class.getName());
 				System.out.println("\t<data-dir>   directory containing csv data samples");
 				System.out.println("\t<log-file>   file to write performance info, for example: mqtt-performance.csv");
 				System.out.println("\t<uri>        the server URI, for example: tcp://localhost:1883");
-				System.out.println("\t<id>         the client identification, for example: test-mqtt-client");
 				System.out.println("\t<interval>   the data send interval in miliseconds, for example: 300");
 			} else {
 				String csvDir = args[0];
 				String logFile = args[1];
 				String serverURI = args[2];
-				String clientId = args[3];
-				int interval = Integer.parseInt(args[4]);
+				int interval = Integer.parseInt(args[3]);
 				TestMqttClient testMqttClient = new TestMqttClient(csvDir, logFile);
 				System.out.println("client running...");
-				testMqttClient.execute(serverURI, clientId, interval);
+				testMqttClient.execute(serverURI, interval);
 				System.out.println("finished after " + timer.elapsed() + " ms");
 			}
 		} catch (Throwable t) {
@@ -67,6 +65,8 @@ public class TestMqttClient {
 			System.exit(0);
 		}
 	}
+
+	private final ClientCallback CLIENT_CALLBACK = new ClientCallback();
 
 	private final Queue<Timer> timers;
 	private final Memory memory;
@@ -81,9 +81,9 @@ public class TestMqttClient {
 		this.timers = new LinkedList<>();
 	}
 
-	public void execute(String serverURI, String clientId, int interval) throws Exception {
-		final MqttClient client = newClient(serverURI, clientId);
-		client.subscribe(TOPIC);
+	public void execute(String serverURI, int interval) throws Exception {
+		final MqttClient client = newClient(serverURI);
+		client.subscribe(TestMqttServer.RESOURCE);
 		try {
 			System.out.printf("creating log file \"%s\"...\n", logFile.getAbsolutePath());
 			this.logger = new PrintWriter(logFile);
@@ -109,18 +109,19 @@ public class TestMqttClient {
 			logger.flush();
 			logger.close();
 			System.out.printf("log file \"%s\" created!\n", logFile.getAbsolutePath());
-			client.unsubscribe(TOPIC);
+			client.unsubscribe(TestMqttServer.RESOURCE);
 			client.disconnect();
 		}
 	}
 
-	private MqttClient newClient(String serverURI, String clientId) throws MqttException {
+	private MqttClient newClient(String serverURI) throws MqttException {
 		MemoryPersistence persistence = new MemoryPersistence();
+		String clientId = MqttClient.generateClientId();
 		MqttClient client = new MqttClient(serverURI, clientId, persistence);
 		MqttConnectOptions connOpts = new MqttConnectOptions();
 		connOpts.setCleanSession(false);
 		client.connect(connOpts);
-		client.setCallback(new ClientCallback());
+		client.setCallback(CLIENT_CALLBACK);
 		return client;
 	}
 
@@ -132,6 +133,6 @@ public class TestMqttClient {
 
 	private void sendData(String data, MqttClient client, PrintWriter logOutput) throws Exception {
 		timers.add(new Timer());
-		client.publish(TOPIC, data.getBytes(), 2, false);
+		client.publish(TestMqttServer.RESOURCE, data.getBytes(), 2, false);
 	}
 }

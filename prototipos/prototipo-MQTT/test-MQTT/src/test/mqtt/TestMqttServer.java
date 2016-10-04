@@ -26,7 +26,9 @@ public class TestMqttServer {
 
 		@Override
 		public void onPublish(InterceptPublishMessage msg) {
-			System.out.println(msg.getTopicName() + ": " + msg.getPayload().array().length + " bytes received");
+			if (RESOURCE.equals(msg.getTopicName())) {
+				System.out.println(msg.getPayload().array().length + " bytes received");
+			}
 		}
 
 		@Override
@@ -35,6 +37,8 @@ public class TestMqttServer {
 		@Override
 		public void onUnsubscribe(InterceptUnsubscribeMessage msg) {}
 	}
+
+	public static final String RESOURCE = "sensorData";
 
 	public static void main(String[] args) {
 		try {
