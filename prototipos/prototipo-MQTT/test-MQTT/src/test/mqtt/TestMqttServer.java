@@ -1,6 +1,5 @@
 package test.mqtt;
 
-import java.io.InputStream;
 import java.util.Properties;
 
 import io.moquette.interception.InterceptHandler;
@@ -17,35 +16,24 @@ public class TestMqttServer {
 	private class ServerHandler implements InterceptHandler {
 
 		@Override
-		public void onConnect(InterceptConnectMessage msg) {
-			System.out.println("onConnect");
-		}
+		public void onConnect(InterceptConnectMessage msg) {}
 
 		@Override
-		public void onDisconnect(InterceptDisconnectMessage msg) {
-			System.out.println("onDisconnect");
-		}
+		public void onDisconnect(InterceptDisconnectMessage msg) {}
 
 		@Override
-		public void onMessageAcknowledged(InterceptAcknowledgedMessage msg) {
-			System.out.println("onMessageAcknowledged");
-		}
+		public void onMessageAcknowledged(InterceptAcknowledgedMessage msg) {}
 
 		@Override
 		public void onPublish(InterceptPublishMessage msg) {
-			System.out.println("onPublish");
+			System.out.println(msg.getPayload().array().length + " bytes received");
 		}
 
 		@Override
-		public void onSubscribe(InterceptSubscribeMessage msg) {
-			System.out.println("onSubscribe");
-		}
+		public void onSubscribe(InterceptSubscribeMessage msg) {}
 
 		@Override
-		public void onUnsubscribe(InterceptUnsubscribeMessage msg) {
-			System.out.println("onUnsubscribe");
-		}
-
+		public void onUnsubscribe(InterceptUnsubscribeMessage msg) {}
 	}
 
 	public static void main(String[] args) {
@@ -59,10 +47,12 @@ public class TestMqttServer {
 
 	public void start() throws Exception {
 		Server server = new Server();
-		InputStream config = getClass().getResourceAsStream("/moquette.conf");
 		Properties properties = new Properties();
-		properties.load(config);
+		properties.setProperty("host", "localhost");
+		properties.setProperty("port", "1883");
+		properties.setProperty("autosave_interval", "600");
 		server.startServer(properties);
 		server.addInterceptHandler(new ServerHandler());
+		System.out.println("MQTT server running");
 	}
 }

@@ -6,3 +6,5 @@
 **/*.class
 
 **/data-sample
+
+**/moquette_store*

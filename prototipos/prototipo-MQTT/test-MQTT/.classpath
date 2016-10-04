@@ -15,7 +15,7 @@
 	<classpathentry kind="lib" path="lib/netty-common-4.0.33.Final.jar"/>
 	<classpathentry kind="lib" path="lib/netty-handler-4.0.33.Final.jar"/>
 	<classpathentry kind="lib" path="lib/netty-transport-4.0.33.Final.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.paho.client.mqttv3-1.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.paho.client.mqttv3-1.1.0.jar" sourcepath="E:/eclipse-iot/paho.mqtt.java"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.6.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
