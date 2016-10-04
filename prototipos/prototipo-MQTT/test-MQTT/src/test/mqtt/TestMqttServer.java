@@ -26,7 +26,7 @@ public class TestMqttServer {
 
 		@Override
 		public void onPublish(InterceptPublishMessage msg) {
-			System.out.println(msg.getPayload().array().length + " bytes received");
+			System.out.println(msg.getTopicName() + ": " + msg.getPayload().array().length + " bytes received");
 		}
 
 		@Override
