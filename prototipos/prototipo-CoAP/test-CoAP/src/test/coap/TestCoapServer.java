@@ -23,11 +23,8 @@ public class TestCoapServer extends CoapServer {
 
 		@Override
 		public void handlePOST(CoapExchange exchange) {
-			exchange.accept();
-			String payload = exchange.getRequestText();
-			exchange.respond(payload == null || payload.isEmpty() //
-					? ResponseCode.UNSUPPORTED_CONTENT_FORMAT //
-					: ResponseCode.VALID);
+			System.out.println(exchange.getRequestPayload().length + " bytes received");
+			exchange.respond(ResponseCode.VALID);
 		}
 	}
 
@@ -36,23 +33,20 @@ public class TestCoapServer extends CoapServer {
 	public static void main(String[] args) {
 		try {
 			TestCoapServer server = new TestCoapServer();
-			server.addEndpoints();
 			server.start();
-		} catch (SocketException e) {
-			System.err.println("Failed to initialize server: " + e.getMessage());
+		} catch (Throwable t) {
+			t.printStackTrace();
 		}
 	}
 
 	public TestCoapServer() throws SocketException {
-		add(new DataSampleResource());
-	}
-
-	private void addEndpoints() {
+		// add endpoints
 		for (InetAddress addr : EndpointManager.getEndpointManager().getNetworkInterfaces()) {
 			if (addr instanceof Inet4Address || addr.isLoopbackAddress()) {
 				InetSocketAddress bindToAddress = new InetSocketAddress(addr, COAP_PORT);
 				addEndpoint(new CoapEndpoint(bindToAddress));
 			}
 		}
+		add(new DataSampleResource());
 	}
 }
