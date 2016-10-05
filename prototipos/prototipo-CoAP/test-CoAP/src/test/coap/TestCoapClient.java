@@ -83,23 +83,23 @@ public class TestCoapClient {
 			printLog("%s, %s, %s, %s, %s\n", "bytes_send", "elapsed_time", "used_memory", "free_memory", "total_memory");
 			File[] csvFiles = csvDir.listFiles();
 			Timer timer = new Timer();
-			int limit = 1000;
-			for (File csv : csvFiles) {
-				limit--;
+			int dataLimit = 1000;
+			FILES: for (File csv : csvFiles) {
 				try (BufferedReader reader = new BufferedReader(new FileReader(csv))) {
 					String data = reader.readLine();
 					while ((data = reader.readLine()) != null) {
 						if (!(data = data.trim()).isEmpty()) {
+							dataLimit--;
 							sendData(data, client, logger);
+							if (dataLimit == 0) {
+								break FILES;
+							}
 							timer.waitMilis(interval);
 						}
 					}
 				} catch (Exception e) {
 					System.err.printf("ERROR!\n");
 					e.printStackTrace(System.err);
-				}
-				if (limit == 0) {
-					break;
 				}
 			}
 		} finally {
