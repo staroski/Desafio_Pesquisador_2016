@@ -7,7 +7,6 @@ import java.net.SocketException;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
-import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.network.CoapEndpoint;
 import org.eclipse.californium.core.network.EndpointManager;
 import org.eclipse.californium.core.network.config.NetworkConfig;
@@ -18,15 +17,18 @@ public class TestCoapServer extends CoapServer {
 	private class DataSampleResource extends CoapResource {
 
 		public DataSampleResource() {
-			super("data-sample");
+			super(SENSOR_DATA);
 		}
 
 		@Override
 		public void handlePOST(CoapExchange exchange) {
-			System.out.println(exchange.getRequestPayload().length + " bytes received");
-			exchange.respond(ResponseCode.VALID);
+			byte[] payload = exchange.getRequestPayload();
+			System.out.println(payload.length + " bytes received");
+			exchange.respond(new String(payload));
 		}
 	}
+
+	public static String SENSOR_DATA = "sensorData";
 
 	private static final int COAP_PORT = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
 
@@ -40,7 +42,6 @@ public class TestCoapServer extends CoapServer {
 	}
 
 	public TestCoapServer() throws SocketException {
-		// add endpoints
 		for (InetAddress addr : EndpointManager.getEndpointManager().getNetworkInterfaces()) {
 			if (addr instanceof Inet4Address || addr.isLoopbackAddress()) {
 				InetSocketAddress bindToAddress = new InetSocketAddress(addr, COAP_PORT);

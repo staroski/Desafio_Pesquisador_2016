@@ -12,11 +12,21 @@ final class Timer {
 		return System.currentTimeMillis() - start;
 	}
 
-	public boolean hasElapsed(int time) {
-		return elapsed() >= time;
-	}
-
 	public void reset() {
 		start = System.currentTimeMillis();
+	}
+
+	public void waitMilis(int interval) {
+		long timeToWait = interval - elapsed();
+		if (timeToWait > 0) {
+			synchronized (this) {
+				try {
+					wait(timeToWait);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		reset();
 	}
 }
