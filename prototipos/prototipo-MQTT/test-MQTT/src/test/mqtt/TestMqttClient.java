@@ -83,14 +83,16 @@ public class TestMqttClient {
 
 	public void execute(String serverURI, int interval) throws Exception {
 		final MqttClient client = newClient(serverURI);
-		client.subscribe(TestMqttServer.RESOURCE);
+		client.subscribe(TestMqttServer.SENSOR_DATA);
 		try {
 			System.out.printf("creating log file \"%s\"...\n", logFile.getAbsolutePath());
 			this.logger = new PrintWriter(logFile);
 			printLog("%s, %s, %s, %s, %s\n", "bytes_send", "elapsed_time", "used_memory", "free_memory", "total_memory");
 			File[] csvFiles = csvDir.listFiles();
 			Timer timer = new Timer();
+			int limit = 1000;
 			for (File csv : csvFiles) {
+				limit--;
 				try (BufferedReader reader = new BufferedReader(new FileReader(csv))) {
 					String data = reader.readLine();
 					while ((data = reader.readLine()) != null) {
@@ -103,13 +105,15 @@ public class TestMqttClient {
 					System.err.printf("ERROR!\n");
 					e.printStackTrace(System.err);
 				}
-				break;
+				if (limit == 0) {
+					break;
+				}
 			}
 		} finally {
 			logger.flush();
 			logger.close();
 			System.out.printf("log file \"%s\" created!\n", logFile.getAbsolutePath());
-			client.unsubscribe(TestMqttServer.RESOURCE);
+			client.unsubscribe(TestMqttServer.SENSOR_DATA);
 			client.disconnect();
 		}
 	}
@@ -133,6 +137,6 @@ public class TestMqttClient {
 
 	private void sendData(String data, MqttClient client, PrintWriter logOutput) throws Exception {
 		timers.add(new Timer());
-		client.publish(TestMqttServer.RESOURCE, data.getBytes(), 2, false);
+		client.publish(TestMqttServer.SENSOR_DATA, data.getBytes(), 2, false);
 	}
 }
